@@ -245,7 +245,7 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxspq7fZRh3WBi6
 const SCHEMA = {
   "meta": {
     "title": "Анкета на поселення в колівінг KSE",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "source": "anketa_pereroblena.pdf",
     "language": "uk",
     "questions_count": 23,
@@ -253,7 +253,7 @@ const SCHEMA = {
       "Ключі q01…q23 і порядок варіантів — стабільні. Не змінювати без підняття version.",
       "У JSON-відповіді ключі = id питання, значення = value варіанта (не label).",
       "Для порядкових шкал (ordinal: true) порядок options = градація, поле score = числове значення 1..N.",
-      "Приховані питання (коли q01 = live_no) у відповідь не потрапляють."
+      "Коли q01 = live_no, у відповідь потрапляє лише блок b1 (q01–q04); решта питань не показується і не надсилається."
     ]
   },
   "blocks": [
@@ -267,7 +267,8 @@ const SCHEMA = {
     "gate": {
       "question": "q01",
       "hide_rest_when": "live_no",
-      "description": "Якщо на q01 обрано live_no — решта питань ховається і не валідується; надсилається лише q01."
+      "keep_block": "b1",
+      "description": "Якщо на q01 обрано live_no — показується і надсилається лише блок b1 (q01–q04): відповідь усе одно має ідентифікувати людину, щоб її можна було зняти зі списку. Блоки b2–b5 ховаються і не валідуються."
     }
   },
   "questions": [
@@ -643,7 +644,7 @@ let step = 0;
 let sending = false;
 
 const gated = () => answers[GATE.question] === GATE.hide_rest_when;
-const isVisible = q => !gated() || q.id === GATE.question;
+const isVisible = q => !gated() || q.block === GATE.keep_block;
 const qsOf = b => SCHEMA.questions.filter(q => q.block === b.id);
 const isLastStep = () => gated() || step === BLOCKS.length - 1;
 
@@ -818,7 +819,7 @@ function updateNav(){
   $('#btnBack').hidden = step === 0;
   $('#btnNext').textContent = isLastStep() ? 'Надіслати' : 'Далі →';
   $('#navNote').textContent = gated()
-    ? 'Шкода! Тисни «Надіслати» — і ми знімемо тебе зі списку.'
+    ? 'Шкода! Впиши ім’я та пошту — щоб ми знали, кого зняти зі списку.'
     : (isLastStep() ? 'Останній крок 🎉' : '');
 }
 
@@ -898,6 +899,10 @@ async function submit(){
 function showThanks(){
   $('#app').style.display = 'none';
   const t = $('#thanks');
+  if (gated()){
+    t.querySelector('p').textContent =
+      'Записали, що ти не заселяєшся — знімемо тебе зі списку. Передумаєш — просто заповни анкету ще раз 💛';
+  }
   t.classList.add('on','fade');
   window.scrollTo({ top: 0 });
 }
