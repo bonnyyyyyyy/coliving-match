@@ -1,0 +1,391 @@
+{
+  "meta": {
+    "title": "Анкета на поселення в колівінг KSE",
+    "version": "1.1.0",
+    "source": "anketa_pereroblena.pdf",
+    "language": "uk",
+    "questions_count": 23,
+    "notes": [
+      "Ключі q01…q23 і порядок варіантів — стабільні. Не змінювати без підняття version.",
+      "У JSON-відповіді ключі = id питання, значення = value варіанта (не label).",
+      "Для порядкових шкал (ordinal: true) порядок options = градація, поле score = числове значення 1..N.",
+      "Коли q01 = live_no, у відповідь потрапляє лише блок b1 (q01–q04); решта питань не показується і не надсилається."
+    ]
+  },
+  "blocks": [
+    { "id": "b1", "short": "Про тебе", "title": "Про тебе" },
+    { "id": "b2", "short": "З ким жити", "title": "З ким ти хочеш жити" },
+    { "id": "b3", "short": "Побут", "title": "Побут" },
+    { "id": "b4", "short": "Що принципово", "title": "Що для тебе принципово" },
+    { "id": "b5", "short": "Наскільки важливо", "title": "Наскільки важливо, щоб збігалося" }
+  ],
+  "logic": {
+    "gate": {
+      "question": "q01",
+      "hide_rest_when": "live_no",
+      "keep_block": "b1",
+      "description": "Якщо на q01 обрано live_no — показується і надсилається лише блок b1 (q01–q04): відповідь усе одно має ідентифікувати людину, щоб її можна було зняти зі списку. Блоки b2–b5 ховаються і не валідуються."
+    }
+  },
+  "questions": [
+    {
+      "id": "q01",
+      "number": 1,
+      "block": "b1",
+      "text": "Чи плануєш проживати на колівінгу?",
+      "type": "single",
+      "required": true,
+      "ordinal": false,
+      "options": [
+        { "value": "live_yes", "label": "Так" },
+        { "value": "live_no", "label": "Ні, передумав/передумала" }
+      ]
+    },
+    {
+      "id": "q02",
+      "number": 2,
+      "block": "b1",
+      "text": "Ім'я та прізвище",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "q03",
+      "number": 3,
+      "block": "b1",
+      "text": "Пошта",
+      "type": "email",
+      "required": true
+    },
+    {
+      "id": "q04",
+      "number": 4,
+      "block": "b1",
+      "text": "Спеціальність",
+      "type": "text",
+      "required": false
+    },
+    {
+      "id": "q05",
+      "number": 5,
+      "block": "b2",
+      "text": "Кого з майбутніх однокурсників ти хочеш бачити сусідами? (вкажи до 3 імен, необов'язково)",
+      "type": "text",
+      "required": false,
+      "max_items": 3,
+      "value_format": "array",
+      "value_description": "Масив рядків довжиною 0..3; порожні поля відкидаються."
+    },
+    {
+      "id": "q06",
+      "number": 6,
+      "block": "b2",
+      "text": "Ти б радше заселився/-лась:",
+      "type": "single",
+      "required": true,
+      "ordinal": false,
+      "options": [
+        { "value": "existing_coliving", "label": "у наявний колівінг, де вже живуть старші курси" },
+        { "value": "new_coliving", "label": "у новий колівінг, який заселяють з нуля" },
+        { "value": "no_preference", "label": "без різниці" }
+      ]
+    },
+    {
+      "id": "q07",
+      "number": 7,
+      "block": "b3",
+      "text": "О котрій ти зазвичай лягаєш спати?",
+      "type": "single",
+      "required": true,
+      "ordinal": true,
+      "scale": "sleep_time",
+      "options": [
+        { "value": "before_2230", "label": "раніше 22:30", "score": 1 },
+        { "value": "t2230_2329", "label": "22:30–23:29", "score": 2 },
+        { "value": "t2330_0029", "label": "23:30–00:29", "score": 3 },
+        { "value": "t0030_0129", "label": "00:30–01:29", "score": 4 },
+        { "value": "after_0130", "label": "після 01:30", "score": 5 }
+      ]
+    },
+    {
+      "id": "q08",
+      "number": 8,
+      "block": "b3",
+      "text": "Наскільки для тебе важливий порядок у спільних зонах?",
+      "type": "single",
+      "required": true,
+      "ordinal": true,
+      "scale": "tidiness",
+      "options": [
+        { "value": "mess_ok", "label": "мене безлад не турбує, приберу як буде настрій", "score": 1 },
+        { "value": "clean_when_noticeable", "label": "приберу, коли безлад стає помітним", "score": 2 },
+        { "value": "clean_weekly", "label": "бажано прибирати десь раз на тиждень", "score": 3 },
+        { "value": "mostly_clean", "label": "хочу, щоб було чисто майже завжди", "score": 4 },
+        { "value": "always_clean", "label": "порядок має бути завжди й скрізь — це принципово", "score": 5 }
+      ]
+    },
+    {
+      "id": "q09",
+      "number": 9,
+      "block": "b3",
+      "text": "Який рівень шуму для тебе прийнятний вдома (музика, дзвінки, розмови)?",
+      "type": "single",
+      "required": true,
+      "ordinal": true,
+      "scale": "noise_tolerance",
+      "options": [
+        { "value": "very_quiet", "label": "дуже тихо, майже без звуків", "score": 1 },
+        { "value": "mostly_quiet", "label": "переважно тихо, зрідка музика чи розмови", "score": 2 },
+        { "value": "varies", "label": "по-різному, залежно від дня", "score": 3 },
+        { "value": "often_loud", "label": "часто голосно (музика, дзвінки, компанія)", "score": 4 },
+        { "value": "always_loud", "label": "вдома завжди активно і гучно", "score": 5 }
+      ]
+    },
+    {
+      "id": "q10",
+      "number": 10,
+      "block": "b3",
+      "text": "Як часто до тебе приходять гості?",
+      "type": "single",
+      "required": true,
+      "ordinal": true,
+      "scale": "guests_frequency",
+      "options": [
+        { "value": "almost_never", "label": "майже ніколи", "score": 1 },
+        { "value": "monthly", "label": "раз на місяць", "score": 2 },
+        { "value": "biweekly", "label": "раз на два тижні", "score": 3 },
+        { "value": "weekly", "label": "щотижня", "score": 4 },
+        { "value": "several_times_week", "label": "кілька разів на тиждень", "score": 5 }
+      ]
+    },
+    {
+      "id": "q11",
+      "number": 11,
+      "block": "b3",
+      "text": "Чого ти чекаєш від співмешканців?",
+      "type": "single",
+      "required": true,
+      "ordinal": true,
+      "scale": "social_closeness",
+      "options": [
+        { "value": "calm_neighbourhood", "label": "просто спокійне сусідство", "score": 1 },
+        { "value": "greet_no_bother", "label": "вітаємось і не заважаємо одне одному", "score": 2 },
+        { "value": "sometimes_together", "label": "іноді робимо щось разом", "score": 3 },
+        { "value": "often_together", "label": "часто проводимо час разом", "score": 4 },
+        { "value": "close_community", "label": "хочу тісну спільноту з регулярними спільними активностями", "score": 5 }
+      ]
+    },
+    {
+      "id": "q12",
+      "number": 12,
+      "block": "b3",
+      "text": "Наскільки ти готовий/-а ділитися своїм (їжа, посуд, речі)?",
+      "type": "single",
+      "required": true,
+      "ordinal": true,
+      "scale": "sharing",
+      "options": [
+        { "value": "share_never", "label": "усе моє — тільки моє, ділитися майже не готовий/-а", "score": 1 },
+        { "value": "share_rarely", "label": "ділюся рідко, тільки в крайньому разі", "score": 2 },
+        { "value": "share_depends", "label": "залежить від речі, можна домовитись", "score": 3 },
+        { "value": "share_willingly", "label": "ділюся охоче, якщо просять", "score": 4 },
+        { "value": "share_everything", "label": "взагалі не проблема, усе основне — спільне", "score": 5 }
+      ]
+    },
+    {
+      "id": "q13",
+      "number": 13,
+      "block": "b3",
+      "text": "Як часто тобі потрібна тиша вдома для навчання чи роботи?",
+      "type": "single",
+      "required": true,
+      "ordinal": true,
+      "scale": "silence_need",
+      "options": [
+        { "value": "almost_never", "label": "майже ніколи", "score": 1 },
+        { "value": "rarely", "label": "рідко", "score": 2 },
+        { "value": "sometimes", "label": "іноді", "score": 3 },
+        { "value": "often", "label": "часто", "score": 4 },
+        { "value": "almost_always", "label": "майже завжди", "score": 5 }
+      ]
+    },
+    {
+      "id": "q14",
+      "number": 14,
+      "block": "b3",
+      "text": "Якщо щось не влаштовує в побуті — ти радше промовчиш чи скажеш одразу?",
+      "type": "single",
+      "required": true,
+      "ordinal": true,
+      "scale": "directness",
+      "options": [
+        { "value": "almost_always_silent", "label": "майже завжди промовчу", "score": 1 },
+        { "value": "rather_silent", "label": "радше промовчу", "score": 2 },
+        { "value": "depends", "label": "залежить від ситуації", "score": 3 },
+        { "value": "rather_speak", "label": "радше скажу", "score": 4 },
+        { "value": "almost_always_speak", "label": "майже завжди озвучую одразу", "score": 5 }
+      ]
+    },
+    {
+      "id": "q15",
+      "number": 15,
+      "block": "b3",
+      "text": "Куріння (звичайні чи електронні цигарки)",
+      "type": "single",
+      "required": true,
+      "ordinal": false,
+      "hard_constraint": true,
+      "options": [
+        { "value": "no_smoking", "label": "не палю" },
+        { "value": "smoke_outside", "label": "палю на вулиці або балконі" },
+        { "value": "smoke_indoors", "label": "палю в приміщенні" }
+      ]
+    },
+    {
+      "id": "q16",
+      "number": 16,
+      "block": "b4",
+      "text": "Що для тебе принципово в спільному побуті? (обери до 3 найважливіших)",
+      "type": "multi",
+      "required": true,
+      "min_select": 1,
+      "max_select": 3,
+      "options": [
+        { "value": "quiet_during_exams", "label": "тиша під час сесії — святе" },
+        { "value": "split_costs_equally", "label": "витрати ділимо строго порівну" },
+        { "value": "eco_habits", "label": "еко-звички (сортування, економія)" },
+        { "value": "vegetarian_home", "label": "вегетаріанство/веганство вдома" },
+        { "value": "shared_dinners", "label": "спільні вечері та побут" },
+        { "value": "guests_by_agreement", "label": "гості лише за домовленістю" },
+        { "value": "religious_practices", "label": "релігійні практики вдома" },
+        { "value": "home_is_workplace", "label": "дім — це передусім місце для роботи" }
+      ]
+    },
+    {
+      "id": "q17",
+      "number": 17,
+      "block": "b4",
+      "text": "Чим ти захоплюєшся? (обери все, що підходить)",
+      "type": "multi",
+      "required": true,
+      "min_select": 1,
+      "max_select": null,
+      "options": [
+        { "value": "sport", "label": "спорт і активності" },
+        { "value": "music", "label": "музика" },
+        { "value": "games", "label": "ігри (відео/настолки)" },
+        { "value": "movies", "label": "кіно й серіали" },
+        { "value": "cooking", "label": "готування і їжа" },
+        { "value": "volunteering", "label": "волонтерство" },
+        { "value": "entrepreneurship", "label": "підприємництво і стартапи" },
+        { "value": "science", "label": "наука й дослідження" },
+        { "value": "travel", "label": "подорожі" },
+        { "value": "art_design", "label": "мистецтво й дизайн" },
+        { "value": "debates_politics", "label": "дебати й політика" },
+        { "value": "tech_programming", "label": "техніка й програмування" }
+      ]
+    },
+    {
+      "id": "q18",
+      "number": 18,
+      "block": "b5",
+      "text": "Наскільки важливо, щоб сусіди мали схожий із тобою графік сну?",
+      "type": "single",
+      "required": true,
+      "ordinal": true,
+      "scale": "importance",
+      "pairs_with": "q07",
+      "options": [
+        { "value": "not_important", "label": "зовсім не важливо", "score": 1 },
+        { "value": "slightly_important", "label": "не дуже важливо", "score": 2 },
+        { "value": "important", "label": "важливо", "score": 3 },
+        { "value": "very_important", "label": "дуже важливо", "score": 4 }
+      ]
+    },
+    {
+      "id": "q19",
+      "number": 19,
+      "block": "b5",
+      "text": "Наскільки важливо, щоб сусіди підтримували такий самий порядок, як ти?",
+      "type": "single",
+      "required": true,
+      "ordinal": true,
+      "scale": "importance",
+      "pairs_with": "q08",
+      "options": [
+        { "value": "not_important", "label": "зовсім не важливо", "score": 1 },
+        { "value": "slightly_important", "label": "не дуже важливо", "score": 2 },
+        { "value": "important", "label": "важливо", "score": 3 },
+        { "value": "very_important", "label": "дуже важливо", "score": 4 }
+      ]
+    },
+    {
+      "id": "q20",
+      "number": 20,
+      "block": "b5",
+      "text": "Наскільки важливо, щоб удома було так само тихо, як ти любиш?",
+      "type": "single",
+      "required": true,
+      "ordinal": true,
+      "scale": "importance",
+      "pairs_with": "q09",
+      "options": [
+        { "value": "not_important", "label": "зовсім не важливо", "score": 1 },
+        { "value": "slightly_important", "label": "не дуже важливо", "score": 2 },
+        { "value": "important", "label": "важливо", "score": 3 },
+        { "value": "very_important", "label": "дуже важливо", "score": 4 }
+      ]
+    },
+    {
+      "id": "q21",
+      "number": 21,
+      "block": "b5",
+      "text": "Наскільки важливо, щоб сусіди приймали гостей так само часто, як ти?",
+      "type": "single",
+      "required": true,
+      "ordinal": true,
+      "scale": "importance",
+      "pairs_with": "q10",
+      "options": [
+        { "value": "not_important", "label": "зовсім не важливо", "score": 1 },
+        { "value": "slightly_important", "label": "не дуже важливо", "score": 2 },
+        { "value": "important", "label": "важливо", "score": 3 },
+        { "value": "very_important", "label": "дуже важливо", "score": 4 }
+      ]
+    },
+    {
+      "id": "q22",
+      "number": 22,
+      "block": "b5",
+      "text": "Наскільки важливо, щоб сусіди поділяли твої побутові принципи?",
+      "type": "single",
+      "required": true,
+      "ordinal": true,
+      "scale": "importance",
+      "pairs_with": "q16",
+      "options": [
+        { "value": "not_important", "label": "зовсім не важливо", "score": 1 },
+        { "value": "slightly_important", "label": "не дуже важливо", "score": 2 },
+        { "value": "important", "label": "важливо", "score": 3 },
+        { "value": "very_important", "label": "дуже важливо", "score": 4 }
+      ]
+    },
+    {
+      "id": "q23",
+      "number": 23,
+      "block": "b5",
+      "text": "Наскільки важливо мати спільні хобі чи інтереси з сусідами?",
+      "type": "single",
+      "required": true,
+      "ordinal": true,
+      "scale": "importance",
+      "pairs_with": "q17",
+      "options": [
+        { "value": "not_important", "label": "зовсім не важливо", "score": 1 },
+        { "value": "slightly_important", "label": "не дуже важливо", "score": 2 },
+        { "value": "important", "label": "важливо", "score": 3 },
+        { "value": "very_important", "label": "дуже важливо", "score": 4 }
+      ]
+    }
+  ]
+}
